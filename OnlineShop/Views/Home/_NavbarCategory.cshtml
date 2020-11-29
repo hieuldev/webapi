@@ -1,0 +1,10 @@
+﻿@model IEnumerable<Models.Ef.CATEGORY>
+@{ Layout = null; }
+@foreach (var category in Model)
+{
+    <li>
+        <a href="Shop/GetProductByCategory/@category.CategoryID">
+            @category.CategoryName
+        </a>
+    </li>
+}

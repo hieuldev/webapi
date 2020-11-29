@@ -1,0 +1,183 @@
+﻿@model Models.Ef.SIZE
+
+@{
+    ViewBag.Title = "Size";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Assets/loading-spinner.css" rel="stylesheet" />
+<div class="row">
+    <div class="col-lg-2">
+        <form action="#" method="post" id="size-submit-form">
+
+            <div class="form-group">
+                <div class="input-field col-lg-4 s12">
+                    <label>ID</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="size-id" name="size-id" type="text" class="validate form-control">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-field col-lg-4 s12">
+                    <label>Size</label>
+                </div>
+                <div class="col-md-10">
+                    <input id="size-name" name="size-name" type="text" class="validate form-control">
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-sm" id="size-partial">
+        <div class="loader" id="loader">
+            <svg class="circular">
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"></circle>
+            </svg>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/Areas/Admin/assets/js/sweetalert.min.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $("#size-submit-form").validate({
+                rules: {
+                    'SizeID': "required",
+                    'Size1': "required"
+                },
+                messages: {
+                    'SizeID': "Please enter size id!",
+                    'Size1': "Please enter size number!"
+                },
+                submitHandler: () => {
+                    $.ajax({
+                        url: "@Url.Action("CreateSize", "Product")",
+                        type: "POST",
+                        data: {
+                            "SizeID": $("#size-id").val(),
+                            "Size1": $("#size-name").val()
+                        },
+                       success: function (response) {
+                          if (response.Success) {
+                               swal("Created!", "", "success")
+                                 .then((value) => {
+                                       window.location.reload();
+                                 });
+                                 }
+                          else
+                                swal("CreateFail!", "", "error")
+                          },
+                          error: function (error) {
+                               console.log(error);
+                           }
+                    });
+                }
+            });
+
+            $.get("@Url.Action("SizeList", "Product")",
+                function (data) {
+                    $("#size-partial").append(data);
+                    $("#loader").hide();
+                });
+        });
+
+        function DeleteItem(id) {
+            swal({
+                title: `DELETE item with id: ${id}?`,
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type: "delete",
+                            url: `@Url.Action("DeleteSize", "Product")`,
+                            data: "id=" + id,
+                            success: function (response) {
+                                if (response.Success = 1) {
+                                    swal("Deleted!", "", "success")
+                                        .then(() => {
+                                            window.location.reload();
+                                        })
+                                } else {
+                                    swal("Delete fail!", "", "error");
+                                }
+                            },
+                            error: function (error) {
+                                swal("Delete fail!", "", "error");
+                            }
+                        });
+                    }
+                });
+        };
+
+        function SaveEdit(id) {
+            swal({
+                title: `EDIT item with id: ${id}?`,
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            type: "put",
+                            url: `@Url.Action("EditSize", "Product")`,
+                            data: {
+                                "SizeID": id,
+                                "Size1": $(`#size-${id}`).val()
+                            },
+                            success: function (response) {
+                                if (response.Success = 1) {
+                                    swal("Edited!", "", "success")
+                                        .then(() => {
+                                            window.location.reload();
+                                        })
+                                } else {
+                                    swal("Edit fail!", "", "error");
+                                }
+                            },
+                            error: function (error) {
+                                swal("Edit fail!", "", "error");
+                            }
+                        });
+                    }
+                });
+        };
+
+        function EditItem(id) {
+            $(`#edit-${id}`).toggleClass('active');
+
+            if ($(`#edit-${id}`).hasClass('active')) {
+                $(`#delete-${id}`).hide();
+                $(`#save-${id}`).show();
+                $(`#size-${id}-input`).show();
+                $(`#size-${id}-text`).hide();
+
+                $(`#size-${id}`).removeAttr('readonly');
+            } else {
+                $(`#delete-${id}`).show();
+                $(`#save-${id}`).hide();
+                $(`#size-${id}-input`).hide();
+                $(`#size-${id}-text`).show();
+
+                $(`#size-${id}`).prop('readonly', 'true');
+            };
+        };
+    </script>
+}
+
+
+
