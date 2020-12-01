@@ -21,6 +21,7 @@ namespace Admin
         Dictionary<int, string> ListDictionary1 = new Dictionary<int, string>();
         Dictionary<int, string> ListDictionary2 = new Dictionary<int, string>();
         Dictionary<int, string> ListDictionary3 = new Dictionary<int, string>();
+        Dictionary<int, string> ListDictionary4 = new Dictionary<int, string>();
         Bitmap bitmap;
         bool Kt = false;
         bool Kt2 = false;
@@ -37,7 +38,8 @@ namespace Admin
         List<Model.Size> listSize = null;
         List<Category> listCategory = null;
         List<Customer> listCustomer = null;
-        List<Oder> listOrder = null;
+        List<Order> listOrder = null;
+        int x;
         public void error()
         {
 
@@ -213,10 +215,11 @@ namespace Admin
             }
             return list;
         }
-        private List<Oder> loadOrder()
+        private List<Order> loadOrder()
         {
-            List<Oder> list = null;
-
+            List<ORDER> list = null;
+            List<Order> list1 = new List<Order>();
+            /*List<Order> list1 = null;*/
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(baseAddress);
@@ -227,10 +230,16 @@ namespace Admin
                 var result = responseTask.Result;
                 if (result.IsSuccessStatusCode)
                 {
-                    var readTask = result.Content.ReadAsAsync<List<Oder>>();
+                    var readTask = result.Content.ReadAsAsync<List<ORDER>>();
                     readTask.Wait();
-
                     list = readTask.Result;
+
+                    foreach (var item in list)
+                    {
+
+                        list1.Add(new Order() { OrderID = item.OrderID, CustomerName = item.CUSTOMER.CustomerName, StatusName = item.ORDERSTATU.StatusName, OrderDate = item.OrderDate, DeliveryDate = item.DeliveryDate, Total = item.Total });
+
+                    }
 
                 }
                 else //web api sent error response 
@@ -239,7 +248,7 @@ namespace Admin
 
                 }
             }
-            return list;
+            return list1;
         }
         private List<Category> loadCategory()
         {
@@ -511,7 +520,6 @@ namespace Admin
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
@@ -855,7 +863,7 @@ namespace Admin
                 {
                     client.BaseAddress = new Uri(baseAddress);
                     //HTTP GET
-                    var postTask = client.PutAsJsonAsync<CATEGORY>("editcategory/"+ model.CategoryID, model);
+                    var postTask = client.PutAsJsonAsync<CATEGORY>("editcategory/" + model.CategoryID, model);
                     postTask.Wait();
 
                     var result = postTask.Result;
@@ -916,6 +924,144 @@ namespace Admin
             txtCategoryID.Text = dataGridView3.CurrentRow.Cells[0].Value.ToString();
 
             txtCategoryName.Text = dataGridView3.CurrentRow.Cells[1].Value.ToString();
+        }
+
+        private void groupBox4_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void logoutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmDangNhap frm = new frmDangNhap();
+            frm.Show();
+            this.Hide();
+        }
+
+        private void manageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            tabControl1.Show();
+        }
+
+        private void mânageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dataGridView4_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            cboStatusOder.Text = dataGridView4.CurrentRow.Cells[2].Value.ToString();
+            if (cboStatusOder.Text == "Đang xử lý")
+            {
+                cboStatusOder.Items.Clear();
+                cboStatusOder.Items.Add("Đang xử lý");
+                cboStatusOder.Items.Add("Đang giao hàng");
+                cboStatusOder.Items.Add("Đã giao hàng");
+                cboStatusOder.Items.Add("Hàng có lỗi");
+                cboStatusOder.Items.Add("Đã hủy");
+                /* ListDictionary4.Add(1,"Đang xử lý");
+                 ListDictionary4.Add(2, "Đang giao hàng");
+                 ListDictionary4.Add(3, "Đã giao hàng");
+                 ListDictionary4.Add(4, "Hàng có lỗi");
+                 ListDictionary4.Add(5, "Đã hủy");
+                 cboStatusOder.DataSource = new BindingSource(ListDictionary4, null);
+                 cboStatusOder.DisplayMember = "Value";
+                 cboStatusOder.ValueMember = "Key";*/
+            }
+            else if (cboStatusOder.Text == "Đang giao hàng")
+            {
+                cboStatusOder.Items.Clear();
+                cboStatusOder.Items.Add("Đang giao hàng");
+                cboStatusOder.Items.Add("Đã giao hàng");
+                cboStatusOder.Items.Add("Hàng có lỗi");
+                cboStatusOder.Items.Add("Đã hủy");
+               /* cboStatusOder.Items.Clear();
+                ListDictionary4.Add(2, "Đang giao hàng");
+                ListDictionary4.Add(3, "Đã giao hàng");
+                ListDictionary4.Add(4, "Hàng có lỗi");
+                ListDictionary4.Add(5, "Đã hủy");
+                cboStatusOder.DataSource = new BindingSource(ListDictionary4, null);
+                cboStatusOder.DisplayMember = "Value";
+                cboStatusOder.ValueMember = "Key";*/
+          
+            }
+            else if(cboStatusOder.Text == "Đã giao hàng")
+            {
+
+                cboStatusOder.Items.Clear();
+                cboStatusOder.Items.Add("Đã giao hàng");
+            }   
+            else if(cboStatusOder.Text == "Đã hủy")
+            {
+                cboStatusOder.Items.Clear();
+                cboStatusOder.Items.Add("Đã hủy");
+            }
+            else if(cboStatusOder.Text == "Hàng có lỗi")
+            {
+                cboStatusOder.Items.Clear();
+                cboStatusOder.Items.Add("Hàng có lỗi");
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            
+            if(cboStatusOder.Text == "Đang xử lý")
+            {
+                x = 1;
+            }
+            else if (cboStatusOder.Text == "Đang giao hàng")
+            {
+                x = 2;
+            }
+            else if (cboStatusOder.Text == "Đã giao hàng")
+            {
+                x = 3;
+            }
+            else if (cboStatusOder.Text == "Đã hủy")
+            {
+                x =5;
+            }
+            else if (cboStatusOder.Text == "Hàng có lỗi")
+            {
+                x = 4;
+            }
+            if (cboStatusOder.Text != "")
+            {
+                string OrderID = dataGridView4.CurrentRow.Cells[0].Value.ToString();
+
+                int StatusID = x;
+
+                ORDER model = new ORDER();
+                model.OrderID = int.Parse(OrderID);
+                model.OrderStatusID = StatusID;
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(baseAddress);
+                    //HTTP GET
+                    var postTask = client.PutAsJsonAsync<ORDER>("order", model);
+                    postTask.Wait();
+
+                    var result = postTask.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("Thành công");
+                        listOrder = loadOrder();
+                        if (listCustomer != null)
+                            dataGridView4.DataSource = listOrder;
+                    }
+                    else //web api sent error response 
+                    {
+                        MessageBox.Show("thất bại");
+
+                    }
+                }
+            }
         }
     }
 }

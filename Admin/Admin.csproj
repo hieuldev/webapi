@@ -67,7 +67,7 @@
     <Compile Include="Login.cs" />
     <Compile Include="Model\Category.cs" />
     <Compile Include="Model\Customer.cs" />
-    <Compile Include="Model\Oder.cs" />
+    <Compile Include="Model\Order.cs" />
     <Compile Include="Model\Product.cs" />
     <Compile Include="Model\Size.cs" />
     <Compile Include="Program.cs" />

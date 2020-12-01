@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Admin.Model
 {
-    class Oder
+    class Order
     {
         public int OrderID { get; set; }
         public string CustomerName { get; set; }
