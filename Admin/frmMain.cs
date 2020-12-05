@@ -520,6 +520,8 @@ namespace Admin
 
         private void frmMain_Load(object sender, EventArgs e)
         {
+            tabControl1.Visible = false;
+            tabControl1.TabPages.Remove(tabPage1);
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
@@ -1062,6 +1064,54 @@ namespace Admin
                     }
                 }
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            tabControl1.Visible = true;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            tabControl1.TabPages.Add(tabPage1);
+        }
+
+        private void exitToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void logoutToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            frmDangNhap frm = new frmDangNhap();
+            frm.Show();
+            this.Hide();
+        }
+
+        private void productToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
+            tabControl1.Visible = true;
+            tabControl1.TabPages.Clear();
+            tabControl1.TabPages.Add(tabPage1);
+            tabControl1.TabPages.Add(tabPage2);
+            tabControl1.TabPages.Add(tabPage3);
+            tabControl1.TabPages.Add(tabPage4);
+            tabControl1.TabPages.Add(tabPage5);
+        }
+
+        private void statisticalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            tabControl1.Visible = true;
+            tabControl1.TabPages.Clear();
+            tabControl1.TabPages.Add(tabPage6);
+            tabControl1.TabPages.Add(tabPage7);
+            tabControl1.TabPages.Add(tabPage8);
+        }
+
+        private void homeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            tabControl1.Visible = false;
         }
     }
 }
