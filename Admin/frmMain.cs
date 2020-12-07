@@ -28,6 +28,8 @@ namespace Admin
         bool Kt3 = false;
         string p1;
         string p2;
+        int i = 0;
+        List<string> SizeID = new List<string>();
         public frmMain()
         {
             InitializeComponent();
@@ -40,6 +42,26 @@ namespace Admin
         List<Customer> listCustomer = null;
         List<Order> listOrder = null;
         int x;
+        public void cleartext()
+        {
+            txtID.Clear();
+            txtName.Clear();
+            txtPrice.Clear();
+            txtPP.Clear();
+            txtStock.Clear();
+            txtSize.Clear();
+            txtDecription.Clear();
+        }
+        public void cleartext2()
+        {
+            txtIDSize.Clear();
+            txtSizeName.Clear();
+        }
+        public void cleartext3()
+        {
+            txtCategoryID.Clear();
+            txtCategoryName.Clear();
+        }
         public void error()
         {
 
@@ -61,7 +83,11 @@ namespace Admin
             {
                 MessageBox.Show("Category not null");
             }
-            else if (cboSize.Text == "")
+            else if (txtSize.Text == "")
+            {
+                MessageBox.Show("SizeID not null");
+            }
+            else if (cboStatus.Text == "")
             {
                 MessageBox.Show("SizeID not null");
             }
@@ -71,6 +97,7 @@ namespace Admin
             }
 
         }
+        
         public void error2()
         {
 
@@ -129,7 +156,7 @@ namespace Admin
             listOrder = loadOrder();
             if (listCustomer != null)
                 dataGridView4.DataSource = listOrder;
-
+            txtSize.Clear();
         }
         private List<Product> loadProcduct()
         {
@@ -474,8 +501,6 @@ namespace Admin
                 int? ProductStock = int.Parse(txtStock.Text);
 
                 bool? ProductStatus = bool.Parse(cboStatus.Text);
-
-                string SizeID = cboSize.SelectedValue.ToString();
                 string CategoryID = cboCategory.SelectedValue.ToString();
                 DateTime? CreatedDate = DateTime.Now;
                 ProductModel prod = new ProductModel();
@@ -490,9 +515,12 @@ namespace Admin
                 prod.ProductStatus = ProductStatus;
                 prod.CategoryID = CategoryID;
                 prod.CreatedDate = CreatedDate;
-                List<string> Size = new List<string>();
-                Size.Add(SizeID);
-                prod.SizeID = Size;
+                string[] x = txtSize.Text.Split('/');
+                for (int j = 0; j < x.Length; j++)
+                {
+                    SizeID.Add(x[j]);
+                }
+                prod.SizeID = SizeID;
                 using (var client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(baseAddress);
@@ -504,6 +532,8 @@ namespace Admin
                     if (result.IsSuccessStatusCode)
                     {
                         MessageBox.Show("Sửa sản phẩm thành công");
+                        cleartext();
+                        SizeID.Clear();
                         listProduct = loadProcduct();
                         if (listProduct != null)
                             dataGridView1.DataSource = listProduct;
@@ -580,6 +610,7 @@ namespace Admin
                         if (result.IsSuccessStatusCode)
                         {
                             MessageBox.Show("Xóa sản phẩm thành công");
+                            cleartext();
                             listProduct = loadProcduct();
                             if (listProduct != null)
                                 dataGridView1.DataSource = listProduct;
@@ -645,17 +676,15 @@ namespace Admin
 
                 decimal ProductPrice = Decimal.Parse(txtPrice.Text);
 
-                decimal? PromotionPrice = Decimal.Parse(txtPP.Text);
+                decimal PromotionPrice = Decimal.Parse(txtPP.Text);
 
                 string ShowImage_1 = p1;
 
                 string ShowImage_2 = p2;
 
-                int? ProductStock = int.Parse(txtStock.Text);
+                int ProductStock = int.Parse(txtStock.Text);
 
-                bool? ProductStatus = bool.Parse(cboStatus.Text);
-
-                string SizeID = cboSize.SelectedValue.ToString();
+                bool ProductStatus = bool.Parse(cboStatus.Text);
                 string CategoryID = cboCategory.SelectedValue.ToString();
                 DateTime? CreatedDate = DateTime.Now;
                 ProductModel prod = new ProductModel();
@@ -670,9 +699,12 @@ namespace Admin
                 prod.ProductStatus = ProductStatus;
                 prod.CategoryID = CategoryID;
                 prod.CreatedDate = CreatedDate;
-                List<string> Size = new List<string>();
-                Size.Add(SizeID);
-                prod.SizeID = Size;
+                string[] x = txtSize.Text.Split('/');
+                for (int j = 0; j < x.Length; j++)
+                {
+                    SizeID.Add(x[j]);
+                }
+                prod.SizeID = SizeID;
                 using (var client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(baseAddress);
@@ -684,6 +716,8 @@ namespace Admin
                     if (result.IsSuccessStatusCode)
                     {
                         MessageBox.Show("Thêm sản phẩm thành công");
+                        SizeID.Clear();
+                        cleartext();
                         listProduct = loadProcduct();
                         if (listProduct != null)
                             dataGridView1.DataSource = listProduct;
@@ -720,6 +754,7 @@ namespace Admin
                     if (result.IsSuccessStatusCode)
                     {
                         MessageBox.Show("Thêm size thành công");
+                        cleartext2();
                         listSize = loadSize();
                         if (listSize != null)
                             dataGridView2.DataSource = listSize;
@@ -756,6 +791,7 @@ namespace Admin
                     if (result.IsSuccessStatusCode)
                     {
                         MessageBox.Show("Sửa size thành công");
+                        cleartext2();
                         listSize = loadSize();
                         if (listSize != null)
                             dataGridView2.DataSource = listSize;
@@ -792,6 +828,7 @@ namespace Admin
                         if (result.IsSuccessStatusCode)
                         {
                             MessageBox.Show("Xóa size thành công");
+                            cleartext2();
                             listSize = loadSize();
                             if (listSize != null)
                                 dataGridView2.DataSource = listSize;
@@ -836,6 +873,7 @@ namespace Admin
                     if (result.IsSuccessStatusCode)
                     {
                         MessageBox.Show("Thêm danh mục thành công");
+                        cleartext3();
                         listCategory = loadCategory();
                         if (listCategory != null)
                             dataGridView3.DataSource = listCategory;
@@ -872,6 +910,7 @@ namespace Admin
                     if (result.IsSuccessStatusCode)
                     {
                         MessageBox.Show("Sửa danh mục thành công");
+                        cleartext3();
                         listCategory = loadCategory();
                         if (listCategory != null)
                             dataGridView3.DataSource = listCategory;
@@ -907,6 +946,7 @@ namespace Admin
                         if (result.IsSuccessStatusCode)
                         {
                             MessageBox.Show("Xóa danh mục thành công");
+                            cleartext3();
                             listCategory = loadCategory();
                             if (listCategory != null)
                                 dataGridView3.DataSource = listCategory;
@@ -982,28 +1022,28 @@ namespace Admin
                 cboStatusOder.Items.Add("Đã giao hàng");
                 cboStatusOder.Items.Add("Hàng có lỗi");
                 cboStatusOder.Items.Add("Đã hủy");
-               /* cboStatusOder.Items.Clear();
-                ListDictionary4.Add(2, "Đang giao hàng");
-                ListDictionary4.Add(3, "Đã giao hàng");
-                ListDictionary4.Add(4, "Hàng có lỗi");
-                ListDictionary4.Add(5, "Đã hủy");
-                cboStatusOder.DataSource = new BindingSource(ListDictionary4, null);
-                cboStatusOder.DisplayMember = "Value";
-                cboStatusOder.ValueMember = "Key";*/
-          
+                /* cboStatusOder.Items.Clear();
+                 ListDictionary4.Add(2, "Đang giao hàng");
+                 ListDictionary4.Add(3, "Đã giao hàng");
+                 ListDictionary4.Add(4, "Hàng có lỗi");
+                 ListDictionary4.Add(5, "Đã hủy");
+                 cboStatusOder.DataSource = new BindingSource(ListDictionary4, null);
+                 cboStatusOder.DisplayMember = "Value";
+                 cboStatusOder.ValueMember = "Key";*/
+
             }
-            else if(cboStatusOder.Text == "Đã giao hàng")
+            else if (cboStatusOder.Text == "Đã giao hàng")
             {
 
                 cboStatusOder.Items.Clear();
                 cboStatusOder.Items.Add("Đã giao hàng");
-            }   
-            else if(cboStatusOder.Text == "Đã hủy")
+            }
+            else if (cboStatusOder.Text == "Đã hủy")
             {
                 cboStatusOder.Items.Clear();
                 cboStatusOder.Items.Add("Đã hủy");
             }
-            else if(cboStatusOder.Text == "Hàng có lỗi")
+            else if (cboStatusOder.Text == "Hàng có lỗi")
             {
                 cboStatusOder.Items.Clear();
                 cboStatusOder.Items.Add("Hàng có lỗi");
@@ -1012,8 +1052,8 @@ namespace Admin
 
         private void button2_Click(object sender, EventArgs e)
         {
-            
-            if(cboStatusOder.Text == "Đang xử lý")
+
+            if (cboStatusOder.Text == "Đang xử lý")
             {
                 x = 1;
             }
@@ -1027,7 +1067,7 @@ namespace Admin
             }
             else if (cboStatusOder.Text == "Đã hủy")
             {
-                x =5;
+                x = 5;
             }
             else if (cboStatusOder.Text == "Hàng có lỗi")
             {
@@ -1090,7 +1130,7 @@ namespace Admin
 
         private void productToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+
             tabControl1.Visible = true;
             tabControl1.TabPages.Clear();
             tabControl1.TabPages.Add(tabPage1);
@@ -1113,5 +1153,34 @@ namespace Admin
         {
             tabControl1.Visible = false;
         }
+
+        private void cboSize_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            if (i > 0)
+            {
+                if (txtSize.Text.Contains(cboSize.SelectedValue.ToString()))
+                {
+
+                }
+                else
+                {
+                    if (txtSize.Text == "")
+                    {
+                        txtSize.Text += cboSize.SelectedValue.ToString();
+
+                    }
+                    else
+                    {
+                        txtSize.Text += "/"+ cboSize.SelectedValue.ToString();
+                    }    
+
+                }
+              
+            }
+            i++;
+        }
+
+
     }
 }
